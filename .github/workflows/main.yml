@@ -41,19 +41,4 @@ jobs:
         run: |
             echo "Ha sido comprobado que existe una version de tag con el sufijo ${{ steps.checkTag.outputs.exists }}-RC"
 
-      - name: Success
-       #success() returns true if no previous steps have failed or have been canceled.
-        if: ${{ success() }}
-        run: echo "Still running..."
-      - name: Always
-      #always() returns true no matter if a step failed or the workflow was cancelled.
-        if: ${{ always() }}
-        run: echo "You will always see this"
-      - name: Canceled
-     #canceled() returns true if the workflow was canceled.
-        if: ${{ canceled() }}
-        run: echo "You canceled the workflow"
-      - name: Failure
-#failure() returns true if any previous step failed.
-        if: ${{ failure() }}
-        run: echo "Something went wrong..."
+    
