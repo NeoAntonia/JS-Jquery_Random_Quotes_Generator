@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Configuration for AD branch
-        if: ${{ github.ref == $RELEASE_VERSION }}
+        if: ${{ github.ref == 'refs/heads/v*.*.*-AD' }}
         run: |
           echo "Se ha creado correctamente la rama."
 
