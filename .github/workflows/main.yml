@@ -1,0 +1,59 @@
+name: Get the tag version
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Test
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
+                    
+  compare:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configuration for AD branch
+        if: ${{ github.ref == $RELEASE_VERSION }}
+        run: |
+          echo "Se ha creado correctamente la rama."
+
+      - name: Configuration for RT branch
+        if: ${{ github.ref == 'refs/heads/v*.*.*-RT' }}
+        run: |
+           echo "Ha sido comprobado que existe una version de tag con el sufijo ${{ steps.checkTag.outputs.exists }}-RT"
+
+      - name: Configuration for CC branch
+        if: ${{ github.ref == 'refs/heads/v*.*.*-CC' }}
+        run: |
+            echo "Ha sido comprobado que existe una version de tag con el sufijo ${{ steps.checkTag.outputs.exists }}-CC"
+
+      - name: Configuration for beta branch
+        if: ${{ github.ref == 'refs/heads/v*.*.*-RC' }}
+        run: |
+            echo "Ha sido comprobado que existe una version de tag con el sufijo ${{ steps.checkTag.outputs.exists }}-RC"
+
+      - name: Success
+       #success() returns true if no previous steps have failed or have been canceled.
+        if: ${{ success() }}
+        run: echo "Still running..."
+      - name: Always
+      #always() returns true no matter if a step failed or the workflow was cancelled.
+        if: ${{ always() }}
+        run: echo "You will always see this"
+      - name: Canceled
+     #canceled() returns true if the workflow was canceled.
+        if: ${{ canceled() }}
+        run: echo "You canceled the workflow"
+      - name: Failure
+#failure() returns true if any previous step failed.
+        if: ${{ failure() }}
+        run: echo "Something went wrong..."
